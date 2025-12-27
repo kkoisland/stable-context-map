@@ -1,73 +1,83 @@
-# React + TypeScript + Vite
+# stable-context-map
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React map application that preserves the user's viewing context. When searching for locations, the map maintains its current zoom level and center position, adding search results as markers without disrupting the user's viewport.
 
-Currently, two official plugins are available:
+## Purpose
+Searches do not change zoom or center - the displayed context is preserved. The user's viewpoint belongs to them, and search is information addition, not viewport manipulation.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features (MVP)
+- Map display with OpenStreetMap (via react-leaflet)
+- Search box overlay for location search (Nominatim geocoding)
+- Add search results as markers without moving the map
+- Marker info panel (fixed at bottom-left)
+- PDF export (map + marker list)
 
-## React Compiler
+## Tech Stack
+- React (Functional Components)
+- TypeScript (Type-safe development)
+- Vite (Development environment and build tool)
+- pnpm (Package manager)
+- Biome (Formatter + Linter)
+- react-leaflet (Map display)
+- Nominatim (OpenStreetMap geocoding API)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Data Structures
+```typescript
+interface Marker {
+  id: string
+  lat: number
+  lng: number
+  label: string
+  address?: string
+  memo?: string
+}
 
-## Expanding the ESLint configuration
+interface AppState {
+  zoom: number  // Changed only by user interaction
+  markers: Marker[]
+}
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+interface ExportOptions {
+  includeMap: boolean
+  includeMarkerList: boolean
+}
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Setup
+```bash
+# Clone the repository
+git clone git@github.com:kkoisland/stable-context-map.git
+cd stable-context-map
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+# Install dependencies
+pnpm install
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Start development server
+pnpm dev
+```
+
+## Deployment
+<!-- TODO: Write about deployment method -->
+
+## Project Structure
+```
+stable-context-map/
+├── public/
+├── src/
+│   ├── components/
+│   │   ├── Map.tsx              # Map component
+│   │   ├── SearchBox.tsx        # Search UI overlay
+│   │   ├── MarkerInfo.tsx       # Marker info panel (bottom-left)
+│   │   └── ExportButton.tsx     # PDF export button
+│   ├── types.ts                 # Type definitions
+│   ├── geocoding.ts             # Nominatim API calls
+│   ├── pdf.ts                   # PDF generation logic
+│   ├── App.tsx                  # Main component (state management)
+│   ├── main.tsx                 # Entry point
+│   └── index.css                # Global styles
+├── .gitignore
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+└── biome.json
 ```
