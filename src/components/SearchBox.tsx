@@ -4,9 +4,8 @@ const SearchBox = () => (
 			<input
 				type="text"
 				placeholder="Search location..."
-				className="pointer-events-auto w-[300px] px-4 py-3 rounded-lg outline-none"
+				className="pointer-events-auto w-[300px] px-4 py-3 rounded-lg outline-none bg-white dark:bg-gray-800 dark:text-white"
 				style={{
-					backgroundColor: "white",
 					border: "1px solid #ddd",
 					boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
 				}}
