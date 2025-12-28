@@ -9,7 +9,7 @@ function App() {
 	};
 
 	return (
-		<div style={{ position: "relative", width: "100%", height: "100%" }}>
+		<div className="relative w-full h-full">
 			<MapView zoom={zoom} onZoomChange={handleZoomChange} />
 			<SearchBox />
 		</div>
