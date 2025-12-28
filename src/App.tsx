@@ -1,10 +1,14 @@
+import { useState } from "react";
+import MapView from "./components/Map";
+
 function App() {
-	return (
-		<div>
-			<h1>stable-context-map</h1>
-			<p>Map application will be implemented here.</p>
-		</div>
-	);
+	const [zoom, setZoom] = useState(13);
+
+	const handleZoomChange = (newZoom: number) => {
+		// setZoom(newZoom);
+	};
+
+	return <MapView zoom={zoom} onZoomChange={handleZoomChange} />;
 }
 
 export default App;
