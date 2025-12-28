@@ -1,5 +1,6 @@
 import { useState } from "react";
 import MapView from "./components/Map";
+import SearchBox from "./components/SearchBox";
 
 function App() {
 	const [zoom, setZoom] = useState(13);
@@ -7,7 +8,12 @@ function App() {
 		setZoom(newZoom);
 	};
 
-	return <MapView zoom={zoom} onZoomChange={handleZoomChange} />;
+	return (
+		<div style={{ position: "relative", width: "100%", height: "100%" }}>
+			<MapView zoom={zoom} onZoomChange={handleZoomChange} />
+			<SearchBox />
+		</div>
+	);
 }
 
 export default App;
