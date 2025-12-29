@@ -3,7 +3,9 @@
 	"editor.formatOnSave": true,
 	"editor.detectIndentation": false,
 	"editor.insertSpaces": false,
-
+	"github.copilot.enable": {
+		"*": false
+	},
 	"[typescript]": {
 		"editor.defaultFormatter": "biomejs.biome"
 	},
