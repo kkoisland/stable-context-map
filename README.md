@@ -13,11 +13,13 @@ Searches do not change zoom or center - the displayed context is preserved. The 
 - PDF export (map + marker list)
 
 ## Tech Stack
+- Node.js: 22.21.1
 - React (Functional Components)
 - TypeScript (Type-safe development)
 - Vite (Development environment and build tool)
 - pnpm (Package manager)
 - Biome (Formatter + Linter)
+- Tailwind CSS (Styling with dark mode support)
 - react-leaflet (Map display)
 - Nominatim (OpenStreetMap geocoding API)
 
