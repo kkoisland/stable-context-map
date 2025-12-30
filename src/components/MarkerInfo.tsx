@@ -55,13 +55,19 @@ const MarkerInfo = ({
 		>
 			<div className="flex justify-between items-center mb-2">
 				<h3 className="font-bold">Marker #{markerIndex + 1}</h3>
-				<button
-					type="button"
-					onClick={onClose}
-					className="text-xl leading-none hover:opacity-70"
-				>
-					×
-				</button>
+				<div className="flex items-center gap-2">
+					<button type="button" onClick={onDelete} title="Delete Marker">
+						🗑️
+					</button>
+					<button
+						type="button"
+						onClick={onClose}
+						className="text-xl leading-none hover:opacity-70"
+						title="Close"
+					>
+						×
+					</button>
+				</div>
 			</div>
 			<div className="space-y-2 text-sm">
 				<div>
@@ -80,7 +86,7 @@ const MarkerInfo = ({
 					<strong>Memo:</strong>
 					<textarea
 						value={marker.memo || ""}
-						readOnly
+						onChange={(e) => onMemoChange(e.target.value)}
 						placeholder="Add a note..."
 						className="w-full mt-1 p-2 border rounded resize-none bg-white dark:bg-gray-700 dark:border-gray-600"
 						rows={3}
@@ -90,6 +96,7 @@ const MarkerInfo = ({
 					/>
 				</div>
 			</div>
+			<div className="mt-4 flex justify-end"></div>
 		</div>
 	);
 };
