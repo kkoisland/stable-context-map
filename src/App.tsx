@@ -60,6 +60,19 @@ function App() {
 		setSelectedMarkerId(null);
 	};
 
+	const handleDeleteMarker = () => {
+		setMarkers((prev) => prev.filter((m) => m.id !== selectedMarkerId));
+		setSelectedMarkerId(null);
+	};
+
+	const handleMemoChange = (memo: string) => {
+		if (selectedMarkerId === null) return;
+
+		setMarkers((prev) =>
+			prev.map((m) => (m.id === selectedMarkerId ? { ...m, memo } : m)),
+		);
+	};
+
 	return (
 		<div className="relative w-full h-full">
 			<MapView
@@ -77,8 +90,8 @@ function App() {
 			<MarkerInfo
 				marker={selectedMarker}
 				markerIndex={selectedIndex}
-				onMemoChange={() => {}}
-				onDelete={() => {}}
+				onMemoChange={handleMemoChange}
+				onDelete={handleDeleteMarker}
 				onClose={handleClose}
 			/>
 		</div>
