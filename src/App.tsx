@@ -1,5 +1,6 @@
 import { useState } from "react";
 import MapView from "./components/Map";
+import MarkerInfo from "./components/MarkerInfo";
 import SearchBox from "./components/SearchBox";
 import searchLocation from "./geocoding";
 import type { Marker } from "./types";
@@ -9,6 +10,15 @@ function App() {
 	const [markers, setMarkers] = useState<Marker[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [searchValue, setSearchValue] = useState("");
+	const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null);
+
+	const selectedIndex = selectedMarkerId
+		? markers.findIndex((m) => m.id === selectedMarkerId)
+		: null;
+	const selectedMarker =
+		selectedIndex !== null && selectedIndex >= 0
+			? markers[selectedIndex]
+			: null;
 
 	const handleZoomChange = (newZoom: number) => {
 		setZoom(newZoom);
@@ -32,8 +42,6 @@ function App() {
 				address: result.display_name,
 			};
 			setMarkers((prev) => [...prev, newMarker]);
-			console.log("Added marker:", newMarker);
-			console.log("markers", markers);
 			setSearchValue("");
 		} catch (error) {
 			if (error instanceof Error && error.message === "Search failed")
@@ -44,14 +52,34 @@ function App() {
 		}
 	};
 
+	const handleMarkerClick = (id: string) => {
+		setSelectedMarkerId(id);
+	};
+
+	const handleClose = () => {
+		setSelectedMarkerId(null);
+	};
+
 	return (
 		<div className="relative w-full h-full">
-			<MapView zoom={zoom} onZoomChange={handleZoomChange} markers={markers} />
+			<MapView
+				zoom={zoom}
+				onZoomChange={handleZoomChange}
+				markers={markers}
+				onMarkerClick={handleMarkerClick}
+			/>
 			<SearchBox
 				value={searchValue}
 				onChange={setSearchValue}
 				onSearch={handleSearch}
 				loading={loading}
+			/>
+			<MarkerInfo
+				marker={selectedMarker}
+				markerIndex={selectedIndex}
+				onMemoChange={() => {}}
+				onDelete={() => {}}
+				onClose={handleClose}
 			/>
 		</div>
 	);

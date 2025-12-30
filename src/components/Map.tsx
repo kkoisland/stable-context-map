@@ -5,6 +5,7 @@ interface MapViewProps {
 	zoom: number;
 	onZoomChange: (zoom: number) => void;
 	markers: MarkerType[];
+	onMarkerClick: (id: string) => void;
 }
 
 const TOKYO_CENTER: [number, number] = [35.6812, 139.7671];
@@ -23,7 +24,12 @@ const ZoomHandler = ({
 	return null;
 };
 
-const MapView = ({ zoom, onZoomChange, markers }: MapViewProps) => {
+const MapView = ({
+	zoom,
+	onZoomChange,
+	markers,
+	onMarkerClick,
+}: MapViewProps) => {
 	return (
 		<MapContainer
 			center={TOKYO_CENTER}
@@ -37,7 +43,11 @@ const MapView = ({ zoom, onZoomChange, markers }: MapViewProps) => {
 			/>
 			<ZoomHandler onZoomChange={onZoomChange} />
 			{markers.map((marker) => (
-				<Marker key={marker.id} position={[marker.lat, marker.lng]} />
+				<Marker
+					key={marker.id}
+					position={[marker.lat, marker.lng]}
+					eventHandlers={{ click: () => onMarkerClick(marker.id) }}
+				/>
 			))}
 		</MapContainer>
 	);
