@@ -88,7 +88,7 @@ function App() {
 				onSearch={handleSearch}
 				loading={loading}
 			/>
-			<ExportButton />
+			<ExportButton markers={markers} />
 			<MarkerInfo
 				marker={selectedMarker}
 				markerIndex={selectedIndex}
