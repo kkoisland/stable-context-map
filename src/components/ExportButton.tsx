@@ -40,8 +40,8 @@ const ExportButton = ({ markers }: ExportButtonProps) => {
 		};
 	}, [isOpenPanel]);
 
-	const handleExport = () => {
-		exportToPDF({ filename, includeMap, includeMarkerList, markers });
+	const handleExport = async () => {
+		await exportToPDF({ filename, includeMap, includeMarkerList, markers });
 		setIsOpenPanel(false);
 	};
 
