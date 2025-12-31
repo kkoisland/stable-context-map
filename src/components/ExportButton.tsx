@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import exportToPDF from "../pdf";
+import type { Marker } from "../types";
 
-const ExportButton = () => {
+interface ExportButtonProps {
+	markers: Marker[];
+}
+
+const ExportButton = ({ markers }: ExportButtonProps) => {
 	const [isOpenPanel, setIsOpenPanel] = useState(false);
 	const [filename, setFilename] = useState("Untitled.pdf");
 	const [includeMap, setIncludeMap] = useState(true);
@@ -35,7 +41,7 @@ const ExportButton = () => {
 	}, [isOpenPanel]);
 
 	const handleExport = () => {
-		console.log("Export PDF", { filename, includeMap, includeMarkerList });
+		exportToPDF({ filename, includeMap, includeMarkerList, markers });
 		setIsOpenPanel(false);
 	};
 
