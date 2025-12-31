@@ -22,6 +22,8 @@ Searches do not change zoom or center - the displayed context is preserved. The 
 - Tailwind CSS (Styling with dark mode support)
 - react-leaflet (Map display)
 - Nominatim (OpenStreetMap geocoding API)
+- jsPDF (PDF generation)
+- html2canvas (Map screenshot capture)
 
 ## Data Structures
 ```typescript
