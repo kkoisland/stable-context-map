@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ExportButton from "./components/ExportButton";
 import MapView from "./components/Map";
 import MarkerInfo from "./components/MarkerInfo";
 import SearchBox from "./components/SearchBox";
@@ -87,6 +88,7 @@ function App() {
 				onSearch={handleSearch}
 				loading={loading}
 			/>
+			<ExportButton />
 			<MarkerInfo
 				marker={selectedMarker}
 				markerIndex={selectedIndex}
