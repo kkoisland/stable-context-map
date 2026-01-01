@@ -41,13 +41,6 @@ const exportToPDF = async ({
 	includeMarkerList,
 	markers,
 }: exportToPDFProps) => {
-	console.log("exportToPDF called", {
-		filename,
-		includeMap,
-		includeMarkerList,
-		markers,
-	});
-
 	// Create PDF instance (Letter size)
 	const pdf = new jsPDF({
 		orientation: "portrait",
@@ -59,20 +52,16 @@ const exportToPDF = async ({
 
 	if (includeMap) {
 		const mapElement = document.querySelector(".leaflet-container");
-		console.log("Map element found:", mapElement);
 
 		if (mapElement) {
 			try {
 				const canvas = await html2canvas(mapElement as HTMLElement, {
 					useCORS: true,
 					allowTaint: true,
-					logging: true,
 					backgroundColor: "#ffffff",
 				});
-				console.log("Canvas created:", canvas.width, "x", canvas.height);
 
 				const mapImageData = canvas.toDataURL("image/png");
-				console.log("Map captured", mapImageData.substring(0, 50) + "...");
 
 				// Add map image to PDF (auto-calculate height to maintain aspect ratio)
 				const imgHeight = (canvas.height * contentWidth) / canvas.width;
@@ -102,7 +91,14 @@ const exportToPDF = async ({
 		try {
 			const canvas = await html2canvas(element, { backgroundColor: "#fff" });
 			const imgHeight = (canvas.height * contentWidth) / canvas.width;
-			pdf.addImage(canvas.toDataURL("image/png"), "PNG", 10, yPosition, contentWidth, imgHeight);
+			pdf.addImage(
+				canvas.toDataURL("image/png"),
+				"PNG",
+				10,
+				yPosition,
+				contentWidth,
+				imgHeight,
+			);
 		} catch (error) {
 			console.error("Failed to capture marker list:", error);
 		} finally {
@@ -115,11 +111,12 @@ const exportToPDF = async ({
 	const link = document.createElement("a");
 	link.href = URL.createObjectURL(pdfBlob);
 	// Ensure .pdf extension
-	const downloadFilename = filename.endsWith(".pdf") ? filename : `${filename}.pdf`;
+	const downloadFilename = filename.endsWith(".pdf")
+		? filename
+		: `${filename}.pdf`;
 	link.download = downloadFilename;
 	link.click();
 	URL.revokeObjectURL(link.href);
-	console.log("PDF saved:", downloadFilename);
 };
 
 export default exportToPDF;
