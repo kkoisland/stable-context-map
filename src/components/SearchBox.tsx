@@ -1,4 +1,4 @@
-import type { FormEvent } from "react";
+import { useEffect, useRef, type FormEvent } from "react";
 
 interface SearchBoxProps {
 	value: string;
@@ -8,6 +8,12 @@ interface SearchBoxProps {
 }
 
 const SearchBox = ({ value, onChange, onSearch, loading }: SearchBoxProps) => {
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		if (!loading) inputRef.current?.focus();
+	}, [loading]);
+
 	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const trimmed = value.trim();
@@ -19,6 +25,7 @@ const SearchBox = ({ value, onChange, onSearch, loading }: SearchBoxProps) => {
 		<div className="absolute top-4 left-1/2 -translate-x-1/2 pointer-events-none z-[1000]">
 			<form onSubmit={handleSubmit}>
 				<input
+					ref={inputRef}
 					value={value}
 					onChange={(e) => onChange(e.target.value)}
 					disabled={loading}
