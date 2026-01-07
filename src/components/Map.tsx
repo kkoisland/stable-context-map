@@ -1,4 +1,11 @@
-import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
+import { useEffect } from "react";
+import {
+	MapContainer,
+	Marker,
+	TileLayer,
+	useMap,
+	useMapEvents,
+} from "react-leaflet";
 import type { Marker as MarkerType } from "../types";
 
 interface MapViewProps {
@@ -6,6 +13,7 @@ interface MapViewProps {
 	onZoomChange: (zoom: number) => void;
 	markers: MarkerType[];
 	onMarkerClick: (id: string) => void;
+	center: [number, number];
 }
 
 const TOKYO_CENTER: [number, number] = [35.6812, 139.7671];
@@ -24,11 +32,22 @@ const ZoomHandler = ({
 	return null;
 };
 
+const CenterHandler = ({ center }: { center: [number, number] }) => {
+	const map = useMap();
+
+	useEffect(() => {
+		map.setView(center, map.getZoom());
+	}, [center, map]);
+
+	return null;
+};
+
 const MapView = ({
 	zoom,
 	onZoomChange,
 	markers,
 	onMarkerClick,
+	center,
 }: MapViewProps) => {
 	return (
 		<MapContainer
@@ -42,6 +61,7 @@ const MapView = ({
 				url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 			/>
 			<ZoomHandler onZoomChange={onZoomChange} />
+			<CenterHandler center={center} />
 			{markers.map((marker) => (
 				<Marker
 					key={marker.id}
