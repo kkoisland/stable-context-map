@@ -6,12 +6,15 @@ import SearchBox from "./components/SearchBox";
 import searchLocation from "./geocoding";
 import type { Marker } from "./types";
 
+const TOKYO_CENTER: [number, number] = [35.6812, 139.7671];
+
 function App() {
 	const [zoom, setZoom] = useState(13);
 	const [markers, setMarkers] = useState<Marker[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [searchValue, setSearchValue] = useState("");
 	const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null);
+	const [center, setCenter] = useState<[number, number]>(TOKYO_CENTER);
 
 	const selectedIndex = selectedMarkerId
 		? markers.findIndex((m) => m.id === selectedMarkerId)
@@ -42,6 +45,9 @@ function App() {
 				label: query,
 				address: result.display_name,
 			};
+			if (markers.length === 0) {
+				setCenter([newMarker.lat, newMarker.lng]);
+			}
 			setMarkers((prev) => [...prev, newMarker]);
 			setSearchValue("");
 		} catch (error) {
@@ -81,6 +87,7 @@ function App() {
 				onZoomChange={handleZoomChange}
 				markers={markers}
 				onMarkerClick={handleMarkerClick}
+				center={center}
 			/>
 			<SearchBox
 				value={searchValue}
