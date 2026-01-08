@@ -46,7 +46,7 @@ const ExportButton = ({ markers }: ExportButtonProps) => {
 	};
 
 	return (
-		<div className="absolute top-4 right-4 z-[1000]">
+		<>
 			<button
 				type="button"
 				onClick={() => setIsOpenPanel(true)}
@@ -97,7 +97,7 @@ const ExportButton = ({ markers }: ExportButtonProps) => {
 					</button>
 				</div>
 			)}
-		</div>
+		</>
 	);
 };
 

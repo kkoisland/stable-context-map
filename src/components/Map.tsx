@@ -14,6 +14,7 @@ interface MapViewProps {
 	markers: MarkerType[];
 	onMarkerClick: (id: string) => void;
 	center: [number, number];
+	zoomLocked: boolean;
 }
 
 const TOKYO_CENTER: [number, number] = [35.6812, 139.7671];
@@ -42,12 +43,33 @@ const CenterHandler = ({ center }: { center: [number, number] }) => {
 	return null;
 };
 
+const ZoomLockHandler = ({ zoomLocked }: { zoomLocked: boolean }) => {
+	const map = useMap();
+
+	useEffect(() => {
+		if (zoomLocked) {
+			map.scrollWheelZoom.disable();
+			map.doubleClickZoom.disable();
+			map.touchZoom.disable();
+			map.boxZoom.disable();
+		} else {
+			map.scrollWheelZoom.enable();
+			map.doubleClickZoom.enable();
+			map.touchZoom.enable();
+			map.boxZoom.enable();
+		}
+	}, [zoomLocked, map]);
+
+	return null;
+};
+
 const MapView = ({
 	zoom,
 	onZoomChange,
 	markers,
 	onMarkerClick,
 	center,
+	zoomLocked,
 }: MapViewProps) => {
 	return (
 		<MapContainer
@@ -62,6 +84,7 @@ const MapView = ({
 			/>
 			<ZoomHandler onZoomChange={onZoomChange} />
 			<CenterHandler center={center} />
+			<ZoomLockHandler zoomLocked={zoomLocked} />
 			{markers.map((marker) => (
 				<Marker
 					key={marker.id}

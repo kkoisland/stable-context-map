@@ -3,6 +3,7 @@ import ExportButton from "./components/ExportButton";
 import MapView from "./components/Map";
 import MarkerInfo from "./components/MarkerInfo";
 import SearchBox from "./components/SearchBox";
+import ZoomLockButton from "./components/ZoomLockButton";
 import searchLocation from "./geocoding";
 import type { Marker } from "./types";
 
@@ -15,6 +16,7 @@ function App() {
 	const [searchValue, setSearchValue] = useState("");
 	const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null);
 	const [center, setCenter] = useState<[number, number]>(TOKYO_CENTER);
+	const [zoomLocked, setZoomLocked] = useState(false);
 
 	const selectedIndex = selectedMarkerId
 		? markers.findIndex((m) => m.id === selectedMarkerId)
@@ -80,6 +82,10 @@ function App() {
 		);
 	};
 
+	const handleToggleLock = () => {
+		setZoomLocked(!zoomLocked);
+	};
+
 	return (
 		<div className="relative w-full h-full">
 			<MapView
@@ -88,6 +94,7 @@ function App() {
 				markers={markers}
 				onMarkerClick={handleMarkerClick}
 				center={center}
+				zoomLocked={zoomLocked}
 			/>
 			<SearchBox
 				value={searchValue}
@@ -95,7 +102,10 @@ function App() {
 				onSearch={handleSearch}
 				loading={loading}
 			/>
-			<ExportButton markers={markers} />
+			<div className="absolute top-4 right-4 z-[1000] flex gap-2">
+				<ZoomLockButton isLocked={zoomLocked} onToggleLock={handleToggleLock} />
+				<ExportButton markers={markers} />
+			</div>
 			<MarkerInfo
 				marker={selectedMarker}
 				markerIndex={selectedIndex}
