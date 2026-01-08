@@ -4,6 +4,7 @@ import MapView from "./components/Map";
 import MarkerInfo from "./components/MarkerInfo";
 import SearchBox from "./components/SearchBox";
 import ZoomLockButton from "./components/ZoomLockButton";
+import ZoomSelector from "./components/ZoomSelector";
 import searchLocation from "./geocoding";
 import type { Marker } from "./types";
 
@@ -102,6 +103,11 @@ function App() {
 				onSearch={handleSearch}
 				loading={loading}
 			/>
+			{!zoomLocked && (
+				<div className="absolute bottom-4 left-4 z-[1000]">
+					<ZoomSelector zoom={zoom} onZoomChange={handleZoomChange} />
+				</div>
+			)}
 			<div className="absolute top-4 right-4 z-[1000] flex gap-2">
 				<ZoomLockButton isLocked={zoomLocked} onToggleLock={handleToggleLock} />
 				<ExportButton markers={markers} />
