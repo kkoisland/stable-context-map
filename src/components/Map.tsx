@@ -1,3 +1,4 @@
+import L from "leaflet";
 import { useEffect } from "react";
 import {
 	MapContainer,
@@ -52,11 +53,20 @@ const ZoomLockHandler = ({ zoomLocked }: { zoomLocked: boolean }) => {
 			map.doubleClickZoom.disable();
 			map.touchZoom.disable();
 			map.boxZoom.disable();
+			if (map.zoomControl) {
+				map.removeControl(map.zoomControl);
+				// biome-ignore lint: false positive
+				(map as any).zoomControl = undefined;
+			}
 		} else {
 			map.scrollWheelZoom.enable();
 			map.doubleClickZoom.enable();
 			map.touchZoom.enable();
 			map.boxZoom.enable();
+			if (!map.zoomControl) {
+				map.zoomControl = L.control.zoom();
+				map.addControl(map.zoomControl);
+			}
 		}
 	}, [zoomLocked, map]);
 
