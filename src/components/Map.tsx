@@ -44,6 +44,19 @@ const CenterHandler = ({ center }: { center: [number, number] }) => {
 	return null;
 };
 
+const ZoomUpdateHandler = ({ zoom }: { zoom: number }) => {
+	const map = useMap();
+
+	useEffect(() => {
+		const currentZoom = map.getZoom();
+		if (currentZoom !== zoom) {
+			map.setZoom(zoom);
+		}
+	}, [zoom, map]);
+
+	return null;
+};
+
 const ZoomLockHandler = ({ zoomLocked }: { zoomLocked: boolean }) => {
 	const map = useMap();
 
@@ -93,6 +106,7 @@ const MapView = ({
 				url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 			/>
 			<ZoomHandler onZoomChange={onZoomChange} />
+			<ZoomUpdateHandler zoom={zoom} />
 			<CenterHandler center={center} />
 			<ZoomLockHandler zoomLocked={zoomLocked} />
 			{markers.map((marker) => (
