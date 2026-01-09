@@ -38,6 +38,7 @@ function App() {
 			lat,
 			lng,
 			label: label || `Pin ${pinNumber}`,
+			pinNumber: pinNumber,
 		};
 	};
 
