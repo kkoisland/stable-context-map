@@ -14,6 +14,7 @@ interface MapViewProps {
 	onZoomChange: (zoom: number) => void;
 	markers: MarkerType[];
 	onMarkerClick: (id: string) => void;
+	onMapClick: (lat: number, lng: number) => void;
 	center: [number, number];
 	zoomLocked: boolean;
 }
@@ -86,11 +87,26 @@ const ZoomLockHandler = ({ zoomLocked }: { zoomLocked: boolean }) => {
 	return null;
 };
 
+const MapClickHandler = ({
+	onMapClick,
+}: {
+	onMapClick: (lat: number, lng: number) => void;
+}) => {
+	useMapEvents({
+		click: (e) => {
+			const { lat, lng } = e.latlng;
+			onMapClick(lat, lng);
+		},
+	});
+	return null;
+};
+
 const MapView = ({
 	zoom,
 	onZoomChange,
 	markers,
 	onMarkerClick,
+	onMapClick,
 	center,
 	zoomLocked,
 }: MapViewProps) => {
@@ -109,6 +125,7 @@ const MapView = ({
 			<ZoomUpdateHandler zoom={zoom} />
 			<CenterHandler center={center} />
 			<ZoomLockHandler zoomLocked={zoomLocked} />
+			<MapClickHandler onMapClick={onMapClick} />
 			{markers.map((marker) => (
 				<Marker
 					key={marker.id}
