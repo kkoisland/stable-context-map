@@ -17,6 +17,7 @@ interface MapViewProps {
 	onMapClick: (lat: number, lng: number) => void;
 	center: [number, number];
 	zoomLocked: boolean;
+	markerInfoOpen: boolean;
 }
 
 const TOKYO_CENTER: [number, number] = [35.6812, 139.7671];
@@ -89,11 +90,14 @@ const ZoomLockHandler = ({ zoomLocked }: { zoomLocked: boolean }) => {
 
 const MapClickHandler = ({
 	onMapClick,
+	disabled,
 }: {
 	onMapClick: (lat: number, lng: number) => void;
+	disabled: boolean;
 }) => {
 	useMapEvents({
 		click: (e) => {
+			if (disabled) return;
 			const { lat, lng } = e.latlng;
 			onMapClick(lat, lng);
 		},
@@ -109,6 +113,7 @@ const MapView = ({
 	onMapClick,
 	center,
 	zoomLocked,
+	markerInfoOpen,
 }: MapViewProps) => {
 	return (
 		<MapContainer
@@ -125,7 +130,7 @@ const MapView = ({
 			<ZoomUpdateHandler zoom={zoom} />
 			<CenterHandler center={center} />
 			<ZoomLockHandler zoomLocked={zoomLocked} />
-			<MapClickHandler onMapClick={onMapClick} />
+			<MapClickHandler onMapClick={onMapClick} disabled={markerInfoOpen} />
 			{markers.map((marker) => (
 				<Marker
 					key={marker.id}

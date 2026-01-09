@@ -51,12 +51,17 @@ function App() {
 				return;
 			}
 
-			const newMarker = createMarker(Number(result.lat), Number(result.lon), query);
+			const newMarker = createMarker(
+				Number(result.lat),
+				Number(result.lon),
+				query,
+			);
 			if (markers.length === 0) {
 				setCenter([newMarker.lat, newMarker.lng]);
 			}
 			setMarkers((prev) => [...prev, newMarker]);
 			setSearchValue("");
+			setSelectedMarkerId(newMarker.id);
 		} catch (error) {
 			if (error instanceof Error && error.message === "Search failed")
 				throw error;
@@ -107,6 +112,7 @@ function App() {
 				center={center}
 				zoomLocked={zoomLocked}
 				onMapClick={handleMapClick}
+				markerInfoOpen={selectedMarkerId !== null}
 			/>
 			<SearchBox
 				value={searchValue}
