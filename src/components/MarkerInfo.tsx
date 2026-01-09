@@ -17,17 +17,9 @@ const MarkerInfo = ({
 	onClose,
 }: MarkerInfoProps) => {
 	const panelRef = useRef<HTMLDivElement>(null);
-	const justOpenedRef = useRef(false);
 
 	useEffect(() => {
-		justOpenedRef.current = true;
-
 		const handleClickOutside = (event: MouseEvent) => {
-			if (justOpenedRef.current) {
-				justOpenedRef.current = false;
-				return;
-			}
-
 			if (
 				panelRef.current &&
 				!panelRef.current.contains(event.target as Node)
@@ -36,9 +28,12 @@ const MarkerInfo = ({
 			}
 		};
 
-		document.addEventListener("click", handleClickOutside);
+		const timer = setTimeout(() => {
+			document.addEventListener("click", handleClickOutside);
+		}, 0);
 
 		return () => {
+			clearTimeout(timer);
 			document.removeEventListener("click", handleClickOutside);
 		};
 	}, [onClose]);
