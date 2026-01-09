@@ -7,6 +7,7 @@ export interface Marker {
 	lng: number;
 	label: string;
 	memo?: string;
+	pinNumber: number;
 }
 
 /**

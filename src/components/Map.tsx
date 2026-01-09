@@ -131,13 +131,44 @@ const MapView = ({
 			<CenterHandler center={center} />
 			<ZoomLockHandler zoomLocked={zoomLocked} />
 			<MapClickHandler onMapClick={onMapClick} disabled={markerInfoOpen} />
-			{markers.map((marker) => (
-				<Marker
-					key={marker.id}
-					position={[marker.lat, marker.lng]}
-					eventHandlers={{ click: () => onMarkerClick(marker.id) }}
-				/>
-			))}
+			{markers.map((marker, index) => {
+				const icon = L.divIcon({
+					html: `<div style="
+						position: relative;
+						width: 30px;
+						height: 30px;
+					">
+						<div style="
+							background: #3b82f6;
+							width: 30px;
+							height: 30px;
+							border-radius: 50% 50% 50% 0;
+							transform: rotate(-45deg);
+						"></div>
+						<div style="
+						  position: absolute;
+							inset: 0;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							color: white;
+							font-weight: bold;
+							font-size: 14px;
+						">${index + 1}</div>
+					</div>`,
+					className: "",
+					iconSize: [40, 40],
+					iconAnchor: [20, 30],
+				});
+				return (
+					<Marker
+						key={marker.id}
+						position={[marker.lat, marker.lng]}
+						icon={icon}
+						eventHandlers={{ click: () => onMarkerClick(marker.id) }}
+					/>
+				);
+			})}
 		</MapContainer>
 	);
 };
