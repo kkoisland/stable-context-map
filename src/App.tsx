@@ -92,6 +92,13 @@ function App() {
 		);
 	};
 
+	const handleLabelChange = (label: string) => {
+		if (selectedMarkerId === null) return;
+		setMarkers((prev) =>
+			prev.map((m) => (m.id === selectedMarkerId ? { ...m, label } : m)),
+		);
+	};
+
 	const handleToggleLock = () => {
 		setZoomLocked(!zoomLocked);
 	};
@@ -133,6 +140,7 @@ function App() {
 				marker={selectedMarker}
 				markerIndex={selectedIndex}
 				onMemoChange={handleMemoChange}
+				onLabelChange={handleLabelChange}
 				onDelete={handleDeleteMarker}
 				onClose={handleClose}
 			/>

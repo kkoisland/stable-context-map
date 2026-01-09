@@ -5,6 +5,7 @@ interface MarkerInfoProps {
 	marker: Marker | null;
 	markerIndex: number | null;
 	onMemoChange: (memo: string) => void;
+	onLabelChange: (label: string) => void;
 	onDelete: () => void;
 	onClose: () => void;
 }
@@ -13,6 +14,7 @@ const MarkerInfo = ({
 	marker,
 	markerIndex,
 	onMemoChange,
+	onLabelChange,
 	onDelete,
 	onClose,
 }: MarkerInfoProps) => {
@@ -43,7 +45,7 @@ const MarkerInfo = ({
 	return (
 		<div
 			ref={panelRef}
-			className="absolute bottom-4 right-4 w-80 p-4 rounded-lg bg-white dark:bg-gray-800 dark:text-white z-[1000]"
+			className="absolute bottom-2 right-2 w-80 p-4 rounded-lg bg-white/70 dark:bg-gray-800/70 dark:text-white z-[1000]"
 			style={{
 				boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
 			}}
@@ -65,8 +67,17 @@ const MarkerInfo = ({
 				</div>
 			</div>
 			<div className="space-y-2 text-sm">
-				<div>
-					<strong>Name:</strong> {marker.label}
+				<div className="flex items-center gap-2">
+					<strong>Name:</strong>
+					<textarea
+						value={marker.label}
+						onChange={(e) => onLabelChange(e.target.value)}
+						className="w-full p-1 rounded resize-none bg-white dark:bg-gray-700 dark:border-gray-600"
+						rows={1}
+						style={{
+							border: "1px solid #ddd",
+						}}
+					/>
 				</div>
 				<div>
 					<strong>Coordinates:</strong> {marker.lat.toFixed(4)},{" "}
@@ -78,7 +89,7 @@ const MarkerInfo = ({
 						value={marker.memo || ""}
 						onChange={(e) => onMemoChange(e.target.value)}
 						placeholder="Add a note..."
-						className="w-full mt-1 p-2 border rounded resize-none bg-white dark:bg-gray-700 dark:border-gray-600"
+						className="w-full mt-1 p-2 rounded resize-none bg-white dark:bg-gray-700 dark:border-gray-600"
 						rows={3}
 						style={{
 							border: "1px solid #ddd",
