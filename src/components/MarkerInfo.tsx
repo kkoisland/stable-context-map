@@ -77,11 +77,6 @@ const MarkerInfo = ({
 					<strong>Coordinates:</strong> {marker.lat.toFixed(4)},{" "}
 					{marker.lng.toFixed(4)}
 				</div>
-				{marker.address && (
-					<div>
-						<strong>Address:</strong> {marker.address}
-					</div>
-				)}
 				<div>
 					<strong>Memo:</strong>
 					<textarea

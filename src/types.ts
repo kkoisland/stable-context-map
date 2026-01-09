@@ -6,7 +6,6 @@ export interface Marker {
 	lat: number;
 	lng: number;
 	label: string;
-	address?: string;
 	memo?: string;
 }
 

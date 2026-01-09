@@ -31,6 +31,16 @@ function App() {
 		setZoom(newZoom);
 	};
 
+	const createMarker = (lat: number, lng: number, label?: string): Marker => {
+		const pinNumber = markers.length + 1;
+		return {
+			id: crypto.randomUUID(),
+			lat,
+			lng,
+			label: label || `Pin ${pinNumber}`,
+		};
+	};
+
 	const handleSearch = async (query: string) => {
 		setLoading(true);
 		try {
@@ -41,13 +51,7 @@ function App() {
 				return;
 			}
 
-			const newMarker: Marker = {
-				id: crypto.randomUUID(),
-				lat: Number(result.lat),
-				lng: Number(result.lon),
-				label: query,
-				address: result.display_name,
-			};
+			const newMarker = createMarker(Number(result.lat), Number(result.lon), query);
 			if (markers.length === 0) {
 				setCenter([newMarker.lat, newMarker.lng]);
 			}
@@ -87,6 +91,12 @@ function App() {
 		setZoomLocked(!zoomLocked);
 	};
 
+	const handleMapClick = (lat: number, lng: number) => {
+		const newMarker = createMarker(lat, lng);
+		setMarkers((prev) => [...prev, newMarker]);
+		setSelectedMarkerId(newMarker.id);
+	};
+
 	return (
 		<div className="relative w-full h-full">
 			<MapView
@@ -96,6 +106,7 @@ function App() {
 				onMarkerClick={handleMarkerClick}
 				center={center}
 				zoomLocked={zoomLocked}
+				onMapClick={handleMapClick}
 			/>
 			<SearchBox
 				value={searchValue}
