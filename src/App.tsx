@@ -139,11 +139,11 @@ function App() {
 				<ZoomLockButton isLocked={zoomLocked} onToggleLock={handleToggleLock} />
 				<ExportButton markers={markers} />
 				<MarkerList
-				markers={markers}
-				onMarkerClick={handleMarkerClick}
-				isOpen={isMarkerListOpen}
-				onOpenChange={setIsMarkerListOpen}
-			/>
+					markers={markers}
+					onMarkerClick={handleMarkerClick}
+					isOpen={isMarkerListOpen}
+					onOpenChange={setIsMarkerListOpen}
+				/>
 			</div>
 			<MarkerInfo
 				marker={selectedMarker}
