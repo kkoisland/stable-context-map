@@ -42,7 +42,10 @@ const MarkerList = ({
 		<>
 			<button
 				type="button"
-				onClick={() => onOpenChange(true)}
+				onClick={(e) => {
+					e.stopPropagation();
+					onOpenChange(true);
+				}}
 				title="Open Marker List"
 				className="cursor-pointer"
 			>

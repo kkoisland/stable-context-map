@@ -7,7 +7,10 @@ const ZoomLockButton = ({ isLocked, onToggleLock }: ZoomLockButtonProps) => {
 	return (
 		<button
 			type="button"
-			onClick={onToggleLock}
+			onClick={(e) => {
+				e.stopPropagation();
+				onToggleLock();
+			}}
 			title={isLocked ? "Unlock zoom" : "Lock zoom"}
 			className="cursor-pointer"
 		>

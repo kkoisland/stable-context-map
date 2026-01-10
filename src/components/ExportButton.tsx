@@ -49,7 +49,10 @@ const ExportButton = ({ markers }: ExportButtonProps) => {
 		<>
 			<button
 				type="button"
-				onClick={() => setIsOpenPanel(true)}
+				onClick={(e) => {
+					e.stopPropagation();
+					setIsOpenPanel(true);
+				}}
 				title="Export to PDF"
 				className="cursor-pointer"
 			>
