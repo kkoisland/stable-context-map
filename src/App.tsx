@@ -20,6 +20,7 @@ function App() {
 	const [center, setCenter] = useState<[number, number]>(TOKYO_CENTER);
 	const [zoomLocked, setZoomLocked] = useState(false);
 	const [isMarkerListOpen, setIsMarkerListOpen] = useState(false);
+	const [isExportPanelOpen, setIsExportPanelOpen] = useState(false);
 
 	const selectedIndex = selectedMarkerId
 		? markers.findIndex((m) => m.id === selectedMarkerId)
@@ -122,7 +123,7 @@ function App() {
 				center={center}
 				zoomLocked={zoomLocked}
 				onMapClick={handleMapClick}
-				markerInfoOpen={selectedMarkerId !== null || isMarkerListOpen}
+				markerInfoOpen={selectedMarkerId !== null || isMarkerListOpen || isExportPanelOpen}
 			/>
 			<SearchBox
 				value={searchValue}
@@ -137,7 +138,11 @@ function App() {
 			)}
 			<div className="absolute top-4 right-4 z-[1000] flex gap-2">
 				<ZoomLockButton isLocked={zoomLocked} onToggleLock={handleToggleLock} />
-				<ExportButton markers={markers} />
+				<ExportButton
+					markers={markers}
+					isOpen={isExportPanelOpen}
+					onOpenChange={setIsExportPanelOpen}
+				/>
 				<MarkerList
 					markers={markers}
 					onMarkerClick={handleMarkerClick}

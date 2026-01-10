@@ -4,45 +4,41 @@ import type { Marker } from "../types";
 
 interface ExportButtonProps {
 	markers: Marker[];
+	isOpen: boolean;
+	onOpenChange: (isOpen: boolean) => void;
 }
 
-const ExportButton = ({ markers }: ExportButtonProps) => {
-	const [isOpenPanel, setIsOpenPanel] = useState(false);
+const ExportButton = ({ markers, isOpen, onOpenChange }: ExportButtonProps) => {
 	const [filename, setFilename] = useState("Untitled.pdf");
 	const [includeMap, setIncludeMap] = useState(true);
 	const [includeMarkerList, setIncludeMarkerList] = useState(true);
 	const panelRef = useRef<HTMLDivElement>(null);
-	const justOpenedRef = useRef(false);
 
 	useEffect(() => {
-		if (!isOpenPanel) return;
-
-		justOpenedRef.current = true;
+		if (!isOpen) return;
 
 		const handleClickOutside = (event: MouseEvent) => {
-			if (justOpenedRef.current) {
-				justOpenedRef.current = false;
-				return;
-			}
-
 			if (
 				panelRef.current &&
 				!panelRef.current.contains(event.target as Node)
 			) {
-				setIsOpenPanel(false);
+				onOpenChange(false);
 			}
 		};
 
-		document.addEventListener("click", handleClickOutside);
+		const timer = setTimeout(() => {
+			document.addEventListener("click", handleClickOutside);
+		}, 0);
 
 		return () => {
+			clearTimeout(timer);
 			document.removeEventListener("click", handleClickOutside);
 		};
-	}, [isOpenPanel]);
+	}, [isOpen, onOpenChange]);
 
 	const handleExport = async () => {
 		await exportToPDF({ filename, includeMap, includeMarkerList, markers });
-		setIsOpenPanel(false);
+		onOpenChange(false);
 	};
 
 	return (
@@ -51,14 +47,14 @@ const ExportButton = ({ markers }: ExportButtonProps) => {
 				type="button"
 				onClick={(e) => {
 					e.stopPropagation();
-					setIsOpenPanel(true);
+					onOpenChange(true);
 				}}
 				title="Export to PDF"
 				className="cursor-pointer"
 			>
 				🖨️
 			</button>
-			{isOpenPanel && (
+			{isOpen && (
 				<div
 					ref={panelRef}
 					className="absolute top-12 right-0 w-64 bg-white dark:bg-gray-800 dark:text-white p-3 rounded border border-gray-300 dark:border-gray-600"
