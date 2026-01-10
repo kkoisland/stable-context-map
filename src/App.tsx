@@ -123,7 +123,9 @@ function App() {
 				center={center}
 				zoomLocked={zoomLocked}
 				onMapClick={handleMapClick}
-				markerInfoOpen={selectedMarkerId !== null || isMarkerListOpen || isExportPanelOpen}
+				markerInfoOpen={
+					selectedMarkerId !== null || isMarkerListOpen || isExportPanelOpen
+				}
 			/>
 			<SearchBox
 				value={searchValue}
