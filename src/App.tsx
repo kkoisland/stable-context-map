@@ -2,6 +2,7 @@ import { useState } from "react";
 import ExportButton from "./components/ExportButton";
 import MapView from "./components/Map";
 import MarkerInfo from "./components/MarkerInfo";
+import MarkerList from "./components/MarkerList";
 import SearchBox from "./components/SearchBox";
 import ZoomLockButton from "./components/ZoomLockButton";
 import ZoomSelector from "./components/ZoomSelector";
@@ -18,6 +19,7 @@ function App() {
 	const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null);
 	const [center, setCenter] = useState<[number, number]>(TOKYO_CENTER);
 	const [zoomLocked, setZoomLocked] = useState(false);
+	const [isMarkerListOpen, setIsMarkerListOpen] = useState(false);
 
 	const selectedIndex = selectedMarkerId
 		? markers.findIndex((m) => m.id === selectedMarkerId)
@@ -120,7 +122,7 @@ function App() {
 				center={center}
 				zoomLocked={zoomLocked}
 				onMapClick={handleMapClick}
-				markerInfoOpen={selectedMarkerId !== null}
+				markerInfoOpen={selectedMarkerId !== null || isMarkerListOpen}
 			/>
 			<SearchBox
 				value={searchValue}
@@ -136,6 +138,12 @@ function App() {
 			<div className="absolute top-4 right-4 z-[1000] flex gap-2">
 				<ZoomLockButton isLocked={zoomLocked} onToggleLock={handleToggleLock} />
 				<ExportButton markers={markers} />
+				<MarkerList
+				markers={markers}
+				onMarkerClick={handleMarkerClick}
+				isOpen={isMarkerListOpen}
+				onOpenChange={setIsMarkerListOpen}
+			/>
 			</div>
 			<MarkerInfo
 				marker={selectedMarker}
