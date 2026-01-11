@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ExportButton from "./components/ExportButton";
 import MapView from "./components/Map";
 import MarkerInfo from "./components/MarkerInfo";
@@ -7,17 +7,24 @@ import SearchBox from "./components/SearchBox";
 import ZoomLockButton from "./components/ZoomLockButton";
 import ZoomSelector from "./components/ZoomSelector";
 import searchLocation from "./geocoding";
+import { clearState, loadState, saveState } from "./storage";
 import type { Marker } from "./types";
 
 const TOKYO_CENTER: [number, number] = [35.6812, 139.7671];
+const DEFAULT_ZOOM = 13;
+
+// Load initial state from localStorage or use defaults
+const initialState = loadState();
 
 function App() {
-	const [zoom, setZoom] = useState(13);
-	const [markers, setMarkers] = useState<Marker[]>([]);
+	const [zoom, setZoom] = useState(initialState?.zoom ?? DEFAULT_ZOOM);
+	const [markers, setMarkers] = useState<Marker[]>(initialState?.markers ?? []);
 	const [loading, setLoading] = useState(false);
 	const [searchValue, setSearchValue] = useState("");
 	const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null);
-	const [center, setCenter] = useState<[number, number]>(TOKYO_CENTER);
+	const [center, setCenter] = useState<[number, number]>(
+		initialState?.center ?? TOKYO_CENTER,
+	);
 	const [zoomLocked, setZoomLocked] = useState(false);
 	const [isMarkerListOpen, setIsMarkerListOpen] = useState(false);
 	const [isExportPanelOpen, setIsExportPanelOpen] = useState(false);
@@ -29,6 +36,11 @@ function App() {
 		selectedIndex !== null && selectedIndex >= 0
 			? markers[selectedIndex]
 			: null;
+
+	// Auto-save to localStorage when state changes
+	useEffect(() => {
+		saveState({ markers, zoom, center });
+	}, [markers, zoom, center]);
 
 	const handleZoomChange = (newZoom: number) => {
 		setZoom(newZoom);
@@ -141,6 +153,15 @@ function App() {
 		}
 	};
 
+	const handleClearStorage = () => {
+		if (window.confirm("Delete all markers and data?")) {
+			clearState();
+			setMarkers([]);
+			setZoom(DEFAULT_ZOOM);
+			setCenter(TOKYO_CENTER);
+		}
+	};
+
 	return (
 		<div className="relative w-full h-full">
 			<MapView
@@ -168,11 +189,6 @@ function App() {
 			)}
 			<div className="absolute top-4 right-4 z-[1000] flex gap-2">
 				<ZoomLockButton isLocked={zoomLocked} onToggleLock={handleToggleLock} />
-				<ExportButton
-					markers={markers}
-					isOpen={isExportPanelOpen}
-					onOpenChange={setIsExportPanelOpen}
-				/>
 				<MarkerList
 					markers={markers}
 					onMarkerClick={handleMarkerClick}
@@ -181,6 +197,19 @@ function App() {
 					onMoveToMarker={handleMoveToMarker}
 					onDeleteMarker={handleDeleteMarkerFromList}
 				/>
+				<ExportButton
+					markers={markers}
+					isOpen={isExportPanelOpen}
+					onOpenChange={setIsExportPanelOpen}
+				/>
+				<button
+					type="button"
+					className="cursor-pointer"
+					title="Delete all markers and data"
+					onClick={handleClearStorage}
+				>
+					🗑️
+				</button>
 			</div>
 			<MarkerInfo
 				marker={selectedMarker}

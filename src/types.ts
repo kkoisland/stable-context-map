@@ -35,3 +35,12 @@ export interface NominatimResult {
 	display_name: string;
 	name?: string;
 }
+
+/**
+ * Storage state (saved to localStorage)
+ */
+export interface StorageState {
+	markers: Marker[];
+	zoom: number;
+	center: [number, number];
+}
