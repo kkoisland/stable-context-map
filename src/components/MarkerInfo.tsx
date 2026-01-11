@@ -8,6 +8,7 @@ interface MarkerInfoProps {
 	onLabelChange: (label: string) => void;
 	onDelete: () => void;
 	onClose: () => void;
+	onMoveToMarker: () => void;
 }
 
 const MarkerInfo = ({
@@ -17,6 +18,7 @@ const MarkerInfo = ({
 	onLabelChange,
 	onDelete,
 	onClose,
+	onMoveToMarker,
 }: MarkerInfoProps) => {
 	const panelRef = useRef<HTMLDivElement>(null);
 
@@ -81,7 +83,15 @@ const MarkerInfo = ({
 				</div>
 				<div>
 					<strong>Coordinates:</strong> {marker.lat.toFixed(4)},{" "}
-					{marker.lng.toFixed(4)}
+					{marker.lng.toFixed(4)}{" "}
+					<button
+						type="button"
+						title="Move to this marker"
+						className="cursor-pointer"
+						onClick={onMoveToMarker}
+					>
+						📍
+					</button>
 				</div>
 				<div>
 					<strong>Memo:</strong>
