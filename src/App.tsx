@@ -77,6 +77,7 @@ function App() {
 
 	const handleMarkerClick = (id: string) => {
 		setSelectedMarkerId(id);
+		setIsMarkerListOpen(false);
 	};
 
 	const handleClose = () => {
@@ -111,6 +112,33 @@ function App() {
 		const newMarker = createMarker(lat, lng);
 		setMarkers((prev) => [...prev, newMarker]);
 		setSelectedMarkerId(newMarker.id);
+	};
+
+	const handleMoveToMarker = (id: string) => {
+		const marker = markers.find((m) => m.id === id);
+		if (marker) {
+			setCenter([marker.lat, marker.lng]);
+		}
+	};
+
+	const handleMoveToSelectedMarker = () => {
+		if (selectedMarkerId) {
+			handleMoveToMarker(selectedMarkerId);
+		}
+	};
+
+	const handleDeleteMarkerFromList = (id: string) => {
+		setMarkers((prev) => prev.filter((m) => m.id !== id));
+		if (selectedMarkerId === id) {
+			setSelectedMarkerId(null);
+		}
+	};
+
+	const handleMarkerListOpenChange = (isOpen: boolean) => {
+		setIsMarkerListOpen(isOpen);
+		if (isOpen) {
+			setSelectedMarkerId(null);
+		}
 	};
 
 	return (
@@ -149,7 +177,9 @@ function App() {
 					markers={markers}
 					onMarkerClick={handleMarkerClick}
 					isOpen={isMarkerListOpen}
-					onOpenChange={setIsMarkerListOpen}
+					onOpenChange={handleMarkerListOpenChange}
+					onMoveToMarker={handleMoveToMarker}
+					onDeleteMarker={handleDeleteMarkerFromList}
 				/>
 			</div>
 			<MarkerInfo
@@ -159,6 +189,7 @@ function App() {
 				onLabelChange={handleLabelChange}
 				onDelete={handleDeleteMarker}
 				onClose={handleClose}
+				onMoveToMarker={handleMoveToSelectedMarker}
 			/>
 		</div>
 	);
