@@ -4,27 +4,45 @@ import MapView from "./components/Map";
 import MarkerInfo from "./components/MarkerInfo";
 import MarkerList from "./components/MarkerList";
 import SearchBox from "./components/SearchBox";
+import StorageListSelector from "./components/StorageListSelector";
 import ZoomLockButton from "./components/ZoomLockButton";
 import ZoomSelector from "./components/ZoomSelector";
 import searchLocation from "./geocoding";
-import { clearState, loadState, saveState } from "./storage";
+import {
+	addSavedList,
+	clearCurrentWork,
+	deleteSavedList,
+	getSavedList,
+	loadCurrentWork,
+	loadSavedLists,
+	saveCurrentWork,
+} from "./storage";
 import type { Marker } from "./types";
 
 const TOKYO_CENTER: [number, number] = [35.6812, 139.7671];
 const DEFAULT_ZOOM = 13;
+const CURRENT_WORK_ID = "current";
 
-// Load initial state from localStorage or use defaults
-const initialState = loadState();
+// Load initial state from localStorage
+const loadedCurrentWork = loadCurrentWork();
+const initialWork = loadedCurrentWork || {
+	id: CURRENT_WORK_ID,
+	name: "Current Work",
+	createdAt: new Date().toISOString(),
+	markers: [],
+	zoom: DEFAULT_ZOOM,
+	center: TOKYO_CENTER,
+};
 
 function App() {
-	const [zoom, setZoom] = useState(initialState?.zoom ?? DEFAULT_ZOOM);
-	const [markers, setMarkers] = useState<Marker[]>(initialState?.markers ?? []);
+	const [savedLists, setSavedLists] = useState(loadSavedLists());
+	const [currentSelection, setCurrentSelection] = useState(CURRENT_WORK_ID);
+	const [zoom, setZoom] = useState(initialWork.zoom);
+	const [markers, setMarkers] = useState<Marker[]>(initialWork.markers);
 	const [loading, setLoading] = useState(false);
 	const [searchValue, setSearchValue] = useState("");
 	const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null);
-	const [center, setCenter] = useState<[number, number]>(
-		initialState?.center ?? TOKYO_CENTER,
-	);
+	const [center, setCenter] = useState<[number, number]>(initialWork.center);
 	const [zoomLocked, setZoomLocked] = useState(false);
 	const [isMarkerListOpen, setIsMarkerListOpen] = useState(false);
 	const [isExportPanelOpen, setIsExportPanelOpen] = useState(false);
@@ -37,10 +55,19 @@ function App() {
 			? markers[selectedIndex]
 			: null;
 
-	// Auto-save to localStorage when state changes
+	// Auto-save current work to localStorage when state changes
 	useEffect(() => {
-		saveState({ markers, zoom, center });
-	}, [markers, zoom, center]);
+		if (currentSelection === CURRENT_WORK_ID) {
+			saveCurrentWork({
+				id: CURRENT_WORK_ID,
+				name: "Current Work",
+				createdAt: initialWork.createdAt,
+				markers,
+				zoom,
+				center,
+			});
+		}
+	}, [markers, zoom, center, currentSelection]);
 
 	const handleZoomChange = (newZoom: number) => {
 		setZoom(newZoom);
@@ -153,12 +180,71 @@ function App() {
 		}
 	};
 
-	const handleClearStorage = () => {
-		if (window.confirm("Delete all markers and data?")) {
-			clearState();
-			setMarkers([]);
-			setZoom(DEFAULT_ZOOM);
-			setCenter(TOKYO_CENTER);
+	const handleSelect = (selection: string) => {
+		if (selection === CURRENT_WORK_ID) {
+			// Load current work
+			const currentWork = loadCurrentWork();
+			if (currentWork) {
+				setMarkers(currentWork.markers);
+				setZoom(currentWork.zoom);
+				setCenter(currentWork.center);
+			}
+		} else {
+			// Load saved list
+			const savedList = getSavedList(selection);
+			if (savedList) {
+				setMarkers(savedList.markers);
+				setZoom(savedList.zoom);
+				setCenter(savedList.center);
+			}
+		}
+		setCurrentSelection(selection);
+	};
+
+	const handleSave = () => {
+		const name = window.prompt("Enter a name for this list:");
+		if (name && name.trim()) {
+			const newList = {
+				id: crypto.randomUUID(),
+				name: name.trim(),
+				createdAt: new Date().toISOString(),
+				markers,
+				zoom,
+				center,
+			};
+			addSavedList(newList);
+			setSavedLists(loadSavedLists());
+			alert(`Saved as "${name}"`);
+		}
+	};
+
+	const handleClear = () => {
+		if (currentSelection === CURRENT_WORK_ID) {
+			// Clear current work
+			if (window.confirm("Clear all markers and data from current work?")) {
+				clearCurrentWork();
+				setMarkers([]);
+				setZoom(DEFAULT_ZOOM);
+				setCenter(TOKYO_CENTER);
+			}
+		} else {
+			// Delete saved list
+			if (window.confirm("Delete this saved list?")) {
+				deleteSavedList(currentSelection);
+				setSavedLists(loadSavedLists());
+				// Switch back to current work
+				setCurrentSelection(CURRENT_WORK_ID);
+				const currentWork = loadCurrentWork();
+				if (currentWork) {
+					setMarkers(currentWork.markers);
+					setZoom(currentWork.zoom);
+					setCenter(currentWork.center);
+				} else {
+					setMarkers([]);
+					setZoom(DEFAULT_ZOOM);
+					setCenter(TOKYO_CENTER);
+				}
+			}
 		}
 	};
 
@@ -176,12 +262,21 @@ function App() {
 					selectedMarkerId !== null || isMarkerListOpen || isExportPanelOpen
 				}
 			/>
-			<SearchBox
-				value={searchValue}
-				onChange={setSearchValue}
-				onSearch={handleSearch}
-				loading={loading}
-			/>
+			<div className="absolute top-4 left-1/2 -translate-x-1/2 pointer-events-none z-[1000] flex gap-2">
+				<SearchBox
+					value={searchValue}
+					onChange={setSearchValue}
+					onSearch={handleSearch}
+					loading={loading}
+				/>
+				<StorageListSelector
+					savedLists={savedLists}
+					currentSelection={currentSelection}
+					onSelect={handleSelect}
+					onSave={handleSave}
+					onClear={handleClear}
+				/>
+			</div>
 			{!zoomLocked && (
 				<div className="absolute bottom-4 left-4 z-[1000]">
 					<ZoomSelector zoom={zoom} onZoomChange={handleZoomChange} />
@@ -189,6 +284,11 @@ function App() {
 			)}
 			<div className="absolute top-4 right-4 z-[1000] flex gap-2">
 				<ZoomLockButton isLocked={zoomLocked} onToggleLock={handleToggleLock} />
+				<ExportButton
+					markers={markers}
+					isOpen={isExportPanelOpen}
+					onOpenChange={setIsExportPanelOpen}
+				/>
 				<MarkerList
 					markers={markers}
 					onMarkerClick={handleMarkerClick}
@@ -197,19 +297,6 @@ function App() {
 					onMoveToMarker={handleMoveToMarker}
 					onDeleteMarker={handleDeleteMarkerFromList}
 				/>
-				<ExportButton
-					markers={markers}
-					isOpen={isExportPanelOpen}
-					onOpenChange={setIsExportPanelOpen}
-				/>
-				<button
-					type="button"
-					className="cursor-pointer"
-					title="Delete all markers and data"
-					onClick={handleClearStorage}
-				>
-					🗑️
-				</button>
 			</div>
 			<MarkerInfo
 				marker={selectedMarker}

@@ -22,7 +22,7 @@ const SearchBox = ({ value, onChange, onSearch, loading }: SearchBoxProps) => {
 	};
 
 	return (
-		<div className="absolute top-4 left-1/2 -translate-x-1/2 pointer-events-none z-[1000]">
+		<div>
 			<form onSubmit={handleSubmit}>
 				<input
 					ref={inputRef}

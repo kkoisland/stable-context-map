@@ -37,9 +37,12 @@ export interface NominatimResult {
 }
 
 /**
- * Storage state (saved to localStorage)
+ * Storage list item (saved to localStorage)
  */
-export interface StorageState {
+export interface StorageList {
+	id: string;
+	name: string;
+	createdAt: string;
 	markers: Marker[];
 	zoom: number;
 	center: [number, number];
