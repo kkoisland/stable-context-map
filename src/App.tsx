@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ExportButton from "./components/ExportButton";
-import MapView from "./components/Map";
+import MapView, { type MapViewRef } from "./components/Map";
 import MarkerInfo from "./components/MarkerInfo";
 import MarkerList from "./components/MarkerList";
 import SearchBox from "./components/SearchBox";
@@ -17,6 +17,7 @@ const DEFAULT_ZOOM = 13;
 const initialState = loadState();
 
 function App() {
+	const mapRef = useRef<MapViewRef>(null);
 	const [zoom, setZoom] = useState(initialState?.zoom ?? DEFAULT_ZOOM);
 	const [markers, setMarkers] = useState<Marker[]>(initialState?.markers ?? []);
 	const [loading, setLoading] = useState(false);
@@ -128,9 +129,10 @@ function App() {
 
 	const handleMoveToMarker = (id: string) => {
 		const marker = markers.find((m) => m.id === id);
-		if (marker) {
-			setCenter([marker.lat, marker.lng]);
-		}
+		if (!marker) return;
+		const bounds = mapRef.current?.getBounds();
+		if (bounds?.contains([marker.lat, marker.lng])) return;
+		setCenter([marker.lat, marker.lng]);
 	};
 
 	const handleMoveToSelectedMarker = () => {
@@ -165,6 +167,7 @@ function App() {
 	return (
 		<div className="relative w-full h-full">
 			<MapView
+				ref={mapRef}
 				zoom={zoom}
 				onZoomChange={handleZoomChange}
 				markers={markers}

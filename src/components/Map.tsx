@@ -1,5 +1,6 @@
+import type { LatLngBounds } from "leaflet";
 import L from "leaflet";
-import { useEffect } from "react";
+import { forwardRef, useEffect, useImperativeHandle } from "react";
 import {
 	MapContainer,
 	Marker,
@@ -105,35 +106,54 @@ const MapClickHandler = ({
 	return null;
 };
 
-const MapView = ({
-	zoom,
-	onZoomChange,
-	markers,
-	onMarkerClick,
-	onMapClick,
-	center,
-	zoomLocked,
-	markerInfoOpen,
-}: MapViewProps) => {
-	return (
-		<MapContainer
-			center={TOKYO_CENTER}
-			zoom={zoom}
-			className="w-full h-full"
-			zoomControl={true}
-		>
-			<TileLayer
-				attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-				url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-			/>
-			<ZoomHandler onZoomChange={onZoomChange} />
-			<ZoomUpdateHandler zoom={zoom} />
-			<CenterHandler center={center} />
-			<ZoomLockHandler zoomLocked={zoomLocked} />
-			<MapClickHandler onMapClick={onMapClick} disabled={markerInfoOpen} />
-			{markers.map((marker, index) => {
-				const icon = L.divIcon({
-					html: `<div style="
+export interface MapViewRef {
+	getBounds: () => LatLngBounds | null;
+}
+
+const MapRefHandler = forwardRef<MapViewRef, object>((_, ref) => {
+	const map = useMap();
+
+	useImperativeHandle(ref, () => ({
+		getBounds: () => map.getBounds(),
+	}));
+
+	return null;
+});
+
+const MapView = forwardRef<MapViewRef, MapViewProps>(
+	(
+		{
+			zoom,
+			onZoomChange,
+			markers,
+			onMarkerClick,
+			onMapClick,
+			center,
+			zoomLocked,
+			markerInfoOpen,
+		},
+		ref,
+	) => {
+		return (
+			<MapContainer
+				center={TOKYO_CENTER}
+				zoom={zoom}
+				className="w-full h-full"
+				zoomControl={true}
+			>
+				<TileLayer
+					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+				/>
+				<ZoomHandler onZoomChange={onZoomChange} />
+				<ZoomUpdateHandler zoom={zoom} />
+				<CenterHandler center={center} />
+				<ZoomLockHandler zoomLocked={zoomLocked} />
+				<MapClickHandler onMapClick={onMapClick} disabled={markerInfoOpen} />
+				<MapRefHandler ref={ref} />
+				{markers.map((marker, index) => {
+					const icon = L.divIcon({
+						html: `<div style="
 						position: relative;
 						width: 30px;
 						height: 30px;
@@ -156,21 +176,22 @@ const MapView = ({
 							font-size: 14px;
 						">${index + 1}</div>
 					</div>`,
-					className: "",
-					iconSize: [40, 40],
-					iconAnchor: [20, 30],
-				});
-				return (
-					<Marker
-						key={marker.id}
-						position={[marker.lat, marker.lng]}
-						icon={icon}
-						eventHandlers={{ click: () => onMarkerClick(marker.id) }}
-					/>
-				);
-			})}
-		</MapContainer>
-	);
-};
+						className: "",
+						iconSize: [40, 40],
+						iconAnchor: [20, 30],
+					});
+					return (
+						<Marker
+							key={marker.id}
+							position={[marker.lat, marker.lng]}
+							icon={icon}
+							eventHandlers={{ click: () => onMarkerClick(marker.id) }}
+						/>
+					);
+				})}
+			</MapContainer>
+		);
+	},
+);
 
 export default MapView;
