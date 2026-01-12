@@ -51,7 +51,7 @@ const MarkerList = ({
 					onOpenChange(true);
 				}}
 				title="Open Marker List"
-				className="cursor-pointer"
+				className="cursor-pointer text-2xl"
 			>
 				📋
 			</button>

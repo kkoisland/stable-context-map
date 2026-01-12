@@ -12,7 +12,7 @@ const ZoomLockButton = ({ isLocked, onToggleLock }: ZoomLockButtonProps) => {
 				onToggleLock();
 			}}
 			title={isLocked ? "Unlock zoom" : "Lock zoom"}
-			className="cursor-pointer"
+			className="cursor-pointer text-2xl"
 		>
 			{isLocked ? "🔓" : "🔒"}
 		</button>

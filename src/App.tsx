@@ -187,7 +187,7 @@ function App() {
 					<ZoomSelector zoom={zoom} onZoomChange={handleZoomChange} />
 				</div>
 			)}
-			<div className="absolute top-4 right-4 z-[1000] flex gap-2">
+			<div className="absolute top-2 right-2 z-[1000] flex gap-2 bg-white/50 dark:bg-gray-800/50 p-2 rounded">
 				<ZoomLockButton isLocked={zoomLocked} onToggleLock={handleToggleLock} />
 				<MarkerList
 					markers={markers}
@@ -204,7 +204,7 @@ function App() {
 				/>
 				<button
 					type="button"
-					className="cursor-pointer"
+					className="cursor-pointer text-2xl"
 					title="Delete all markers and data"
 					onClick={handleClearStorage}
 				>

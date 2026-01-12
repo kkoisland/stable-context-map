@@ -50,7 +50,7 @@ const ExportButton = ({ markers, isOpen, onOpenChange }: ExportButtonProps) => {
 					onOpenChange(true);
 				}}
 				title="Export to PDF"
-				className="cursor-pointer"
+				className="cursor-pointer text-2xl"
 			>
 				🖨️
 			</button>
