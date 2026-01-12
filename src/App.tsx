@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import ExportButton from "./components/ExportButton";
+import FitBoundsButton from "./components/FitBoundsButton";
 import MapView, { type MapViewRef } from "./components/Map";
 import MarkerInfo from "./components/MarkerInfo";
 import MarkerList from "./components/MarkerList";
@@ -164,6 +165,12 @@ function App() {
 		}
 	};
 
+	const handleFitBounds = () => {
+		if (markers.length === 0) return;
+		const bounds = markers.map((m) => [m.lat, m.lng] as [number, number]);
+		mapRef.current?.fitBounds(bounds);
+	};
+
 	return (
 		<div className="relative w-full h-full">
 			<MapView
@@ -204,6 +211,10 @@ function App() {
 					markers={markers}
 					isOpen={isExportPanelOpen}
 					onOpenChange={setIsExportPanelOpen}
+				/>
+				<FitBoundsButton
+					onClick={handleFitBounds}
+					disabled={markers.length === 0}
 				/>
 				<button
 					type="button"
