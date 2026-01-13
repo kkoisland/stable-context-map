@@ -44,3 +44,14 @@ export interface StorageState {
 	zoom: number;
 	center: [number, number];
 }
+
+/**
+ * JSON export/import data format
+ */
+export interface ExportData {
+	version: string;
+	exportedAt: string;
+	markers: Marker[];
+	zoom: number;
+	center: [number, number];
+}

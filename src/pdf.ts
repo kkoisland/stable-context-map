@@ -25,7 +25,6 @@ const createMarkerListElement = (markers: Marker[]): HTMLDivElement => {
 
 		let html = `<strong>#${index + 1}: ${marker.label}</strong><br>`;
 		html += `Coordinates: ${marker.lat.toFixed(4)}, ${marker.lng.toFixed(4)}<br>`;
-		if (marker.address) html += `Address: ${marker.address}<br>`;
 		if (marker.memo) html += `Memo: ${marker.memo}`;
 
 		div.innerHTML = html;
