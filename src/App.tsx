@@ -8,6 +8,7 @@ import SearchBox from "./components/SearchBox";
 import ZoomLockButton from "./components/ZoomLockButton";
 import ZoomSelector from "./components/ZoomSelector";
 import searchLocation from "./geocoding";
+import { exportToJSON, importFromJSON } from "./jsonIO";
 import { clearState, loadState, saveState } from "./storage";
 import type { Marker } from "./types";
 
@@ -19,6 +20,7 @@ const initialState = loadState();
 
 function App() {
 	const mapRef = useRef<MapViewRef>(null);
+	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [zoom, setZoom] = useState(initialState?.zoom ?? DEFAULT_ZOOM);
 	const [markers, setMarkers] = useState<Marker[]>(initialState?.markers ?? []);
 	const [loading, setLoading] = useState(false);
@@ -171,6 +173,40 @@ function App() {
 		mapRef.current?.fitBounds(bounds);
 	};
 
+	const handleExportJSON = () => {
+		const name = markers[0]?.label ?? "marker";
+		exportToJSON({
+			data: {
+				version: "1.0",
+				exportedAt: new Date().toISOString(),
+				markers,
+				zoom,
+				center,
+			},
+			name,
+		});
+	};
+
+	const handleImportJSON = async (file: File) => {
+		try {
+			const data = await importFromJSON(file);
+			setMarkers(data.markers);
+			setZoom(data.zoom);
+			setCenter(data.center);
+		} catch (error) {
+			alert("Import failed: invalid JSON file");
+			console.error(error);
+		}
+	};
+
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			handleImportJSON(file);
+			e.target.value = ""; // reset
+		}
+	};
+
 	return (
 		<div className="relative w-full h-full">
 			<MapView
@@ -207,6 +243,29 @@ function App() {
 					onMoveToMarker={handleMoveToMarker}
 					onDeleteMarker={handleDeleteMarkerFromList}
 				/>
+				<button
+					type="button"
+					className="cursor-pointer text-2xl"
+					title="Import from JSON"
+					onClick={() => fileInputRef.current?.click()}
+				>
+					📥
+				</button>
+				<input
+					ref={fileInputRef}
+					type="file"
+					accept=".json"
+					onChange={handleFileChange}
+					style={{ display: "none" }}
+				/>
+				<button
+					type="button"
+					className="cursor-pointer text-2xl"
+					title="Export to JSON"
+					onClick={handleExportJSON}
+				>
+					📤
+				</button>
 				<ExportButton
 					markers={markers}
 					isOpen={isExportPanelOpen}
@@ -214,7 +273,7 @@ function App() {
 				/>
 				<FitBoundsButton
 					onClick={handleFitBounds}
-					disabled={markers.length === 0}
+					disabled={markers.length === 0 || zoomLocked}
 				/>
 				<button
 					type="button"
