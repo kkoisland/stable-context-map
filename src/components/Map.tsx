@@ -109,6 +109,7 @@ const MapClickHandler = ({
 export interface MapViewRef {
 	getBounds: () => LatLngBounds | null;
 	fitBounds: (bounds: [number, number][]) => void;
+	setView: (center: [number, number], zoom: number) => void;
 }
 
 const MapRefHandler = forwardRef<MapViewRef, object>((_, ref) => {
@@ -117,6 +118,7 @@ const MapRefHandler = forwardRef<MapViewRef, object>((_, ref) => {
 	useImperativeHandle(ref, () => ({
 		getBounds: () => map.getBounds(),
 		fitBounds: (bounds) => map.fitBounds(bounds),
+		setView: (center, zoom) => map.setView(center, zoom),
 	}));
 
 	return null;
