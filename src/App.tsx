@@ -193,6 +193,8 @@ function App() {
 			setMarkers(data.markers);
 			setZoom(data.zoom);
 			setCenter(data.center);
+			// Force map to move to imported location
+			mapRef.current?.setView(data.center, data.zoom);
 		} catch (error) {
 			alert("Import failed: invalid JSON file");
 			console.error(error);
