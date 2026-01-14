@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useClickOutside } from "../hooks/useClickOutside";
 import type { Marker } from "../types";
 
 interface MarkerListProps {
@@ -19,28 +20,7 @@ const MarkerList = ({
 	onDeleteMarker,
 }: MarkerListProps) => {
 	const panelRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		if (!isOpen) return;
-
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				panelRef.current &&
-				!panelRef.current.contains(event.target as Node)
-			) {
-				onOpenChange(false);
-			}
-		};
-
-		const timer = setTimeout(() => {
-			document.addEventListener("click", handleClickOutside);
-		}, 0);
-
-		return () => {
-			clearTimeout(timer);
-			document.removeEventListener("click", handleClickOutside);
-		};
-	}, [isOpen, onOpenChange]);
+	useClickOutside(panelRef, () => onOpenChange(false), isOpen);
 
 	return (
 		<>

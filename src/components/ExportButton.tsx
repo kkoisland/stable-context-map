@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { useClickOutside } from "../hooks/useClickOutside";
 import exportToPDF from "../pdf";
 import type { Marker } from "../types";
 
@@ -14,27 +15,7 @@ const ExportButton = ({ markers, isOpen, onOpenChange }: ExportButtonProps) => {
 	const [includeMarkerList, setIncludeMarkerList] = useState(true);
 	const panelRef = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
-		if (!isOpen) return;
-
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				panelRef.current &&
-				!panelRef.current.contains(event.target as Node)
-			) {
-				onOpenChange(false);
-			}
-		};
-
-		const timer = setTimeout(() => {
-			document.addEventListener("click", handleClickOutside);
-		}, 0);
-
-		return () => {
-			clearTimeout(timer);
-			document.removeEventListener("click", handleClickOutside);
-		};
-	}, [isOpen, onOpenChange]);
+	useClickOutside(panelRef, () => onOpenChange(false), isOpen);
 
 	const handleExport = async () => {
 		await exportToPDF({ filename, includeMap, includeMarkerList, markers });

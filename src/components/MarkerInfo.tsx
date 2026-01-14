@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useClickOutside } from "../hooks/useClickOutside";
 import type { Marker } from "../types";
 
 interface MarkerInfoProps {
@@ -21,26 +22,8 @@ const MarkerInfo = ({
 	onMoveToMarker,
 }: MarkerInfoProps) => {
 	const panelRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				panelRef.current &&
-				!panelRef.current.contains(event.target as Node)
-			) {
-				onClose();
-			}
-		};
-
-		const timer = setTimeout(() => {
-			document.addEventListener("click", handleClickOutside);
-		}, 0);
-
-		return () => {
-			clearTimeout(timer);
-			document.removeEventListener("click", handleClickOutside);
-		};
-	}, [onClose]);
+	const isOpen = marker !== null;
+	useClickOutside(panelRef, onClose, isOpen);
 
 	if (marker === null || markerIndex === null) return null;
 
