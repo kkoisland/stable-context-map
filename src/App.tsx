@@ -170,6 +170,11 @@ function App() {
 		if (markers.length === 0) return;
 		const bounds = markers.map((m) => [m.lat, m.lng] as [number, number]);
 		mapRef.current?.fitBounds(bounds);
+
+		const newCenter = mapRef.current?.getCenter();
+		const newZoom = mapRef.current?.getZoom();
+		if (newCenter) setCenter(newCenter);
+		if (newZoom !== undefined) setZoom(newZoom);
 	};
 
 	const handleExportJSON = () => {

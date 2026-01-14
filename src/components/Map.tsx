@@ -110,6 +110,8 @@ export interface MapViewRef {
 	getBounds: () => LatLngBounds | null;
 	fitBounds: (bounds: [number, number][]) => void;
 	setView: (center: [number, number], zoom: number) => void;
+	getCenter: () => [number, number];
+	getZoom: () => number;
 }
 
 const MapRefHandler = forwardRef<MapViewRef, object>((_, ref) => {
@@ -119,6 +121,11 @@ const MapRefHandler = forwardRef<MapViewRef, object>((_, ref) => {
 		getBounds: () => map.getBounds(),
 		fitBounds: (bounds) => map.fitBounds(bounds),
 		setView: (center, zoom) => map.setView(center, zoom),
+		getCenter: () => {
+			const center = map.getCenter();
+			return [center.lat, center.lng];
+		},
+		getZoom: () => map.getZoom(),
 	}));
 
 	return null;
