@@ -21,17 +21,17 @@ const ZoomSelector = ({ zoom, onZoomChange }: ZoomSelectorProps) => {
 			<optgroup label="Regional / City">
 				<option value={8}>Zoom 8 (Region)</option>
 				<option value={9}>Zoom 9 (Metro Area)</option>
-				<option value={10}>Zoom 10 (Large Area)</option>
-				<option value={11}>Zoom 11 (City Area)</option>
-				<option value={12}>Zoom 12 (City Overview)</option>
+				<option value={10}>Zoom 10 (Urban Region)</option>
+				<option value={11}>Zoom 11 (Urban Area)</option>
+				<option value={12}>Zoom 12 (City Area)</option>
 				<option value={13}>Zoom 13 (City)</option>
-				<option value={14}>Zoom 14 (City Detail)</option>
+				<option value={14}>Zoom 14 (District)</option>
 			</optgroup>
 
 			<optgroup label="Detail">
 				<option value={15}>Zoom 15 (Neighborhood)</option>
-				<option value={16}>Zoom 16 (Detailed)</option>
-				<option value={17}>Zoom 17 (Street)</option>
+				<option value={16}>Zoom 16 (Street Level)</option>
+				<option value={17}>Zoom 17 (Street Detail)</option>
 				<option value={18}>Zoom 18 (Building)</option>
 			</optgroup>
 		</select>
