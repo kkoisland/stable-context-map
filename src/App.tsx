@@ -5,7 +5,6 @@ import MapView, { type MapViewRef } from "./components/Map";
 import MarkerInfo from "./components/MarkerInfo";
 import MarkerList from "./components/MarkerList";
 import SearchBox from "./components/SearchBox";
-import ZoomLockButton from "./components/ZoomLockButton";
 import ZoomSelector from "./components/ZoomSelector";
 import searchLocation from "./geocoding";
 import { exportToJSON, importFromJSON } from "./jsonIO";
@@ -236,7 +235,17 @@ function App() {
 				</div>
 			)}
 			<div className="absolute top-2 right-2 z-[1000] flex gap-2 bg-white/50 dark:bg-gray-800/50 p-2 rounded">
-				<ZoomLockButton isLocked={zoomLocked} onToggleLock={handleToggleLock} />
+				<button
+					type="button"
+					onClick={(e) => {
+						e.stopPropagation();
+						handleToggleLock();
+					}}
+					title={zoomLocked ? "Unlock zoom" : "Lock zoom"}
+					className="cursor-pointer text-2xl"
+				>
+					{zoomLocked ? "🔓" : "🔒"}
+				</button>
 				<MarkerList
 					markers={markers}
 					onMarkerClick={handleMarkerClick}
