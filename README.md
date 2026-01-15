@@ -6,19 +6,29 @@ A React map application that preserves the user's viewing context. When searchin
 Searches do not change zoom or center - the displayed context is preserved. The user's viewpoint belongs to them, and search is information addition, not viewport manipulation.
 
 ## Features
-- Map display with OpenStreetMap (via react-leaflet)
-- Search box overlay for location search (Nominatim geocoding)
-- Add search results as markers without moving the map
-- Click on map to add markers manually
-- Marker info panel with editable labels and memos (bottom-right)
-- Marker list with navigation and delete functions (top-right panel)
-- Zoom level selector with 6 presets (bottom-left, hidden when locked)
-- Zoom lock/unlock toggle (prevents accidental zoom changes)
-- Fit bounds button to show all markers at once (top-right)
-- PDF export with customizable options (map + marker list)
-- JSON export/import for data backup and sharing (top-right buttons)
-- Auto-save to localStorage (persistent across sessions)
-- Clear all data with confirmation dialog
+
+### Map Interaction
+- 🗺️ **Map Display**: OpenStreetMap via react-leaflet
+- 🔍 **Stable Search**: Location search without changing zoom/center (Nominatim geocoding)
+- 📍 **Click to Add**: Click anywhere on map to add markers manually
+
+### Marker Management
+- ✏️ **Editable Markers**: Edit labels and memos for each marker
+- 📋 **Marker List**: View all markers with navigation and delete functions (top-right panel)
+- 📊 **Marker Info Panel**: Detailed info for selected marker (bottom-right)
+- 🔢 **Numbered Pins**: Auto-numbered markers on map
+
+### View Controls
+- 🔒 **Zoom Lock**: Lock/unlock zoom controls (prevents accidental zoom during presentations)
+- 🌍 **Fit Bounds**: Auto-adjust view to show all markers at once
+- 📏 **Zoom Selector**: 16 preset zoom levels (2–18), bottom-left, hidden when locked
+
+### Data Persistence
+- 💾 **Auto-save**: Automatic save to localStorage (persistent across sessions)
+- 📥 **Import JSON**: Restore saved plans from JSON files
+- 📤 **Export JSON**: Backup and share your marker data
+- 🖨️ **Export PDF**: Generate PDF with map screenshot and marker list
+- 🗑️ **Clear All**: Delete all markers and data with confirmation dialog
 
 ## Tech Stack
 - Node.js: 22.21.1
@@ -97,8 +107,9 @@ stable-context-map/
 │   │   ├── MarkerList.tsx       # Marker list panel (top-right)
 │   │   ├── ExportButton.tsx     # PDF export button with panel
 │   │   ├── FitBoundsButton.tsx  # Show all markers button
-│   │   ├── ZoomSelector.tsx     # Zoom level dropdown
-│   │   └── ZoomLockButton.tsx   # Zoom lock toggle
+│   │   └── ZoomSelector.tsx     # Zoom level dropdown
+│   ├── hooks/
+│   │   └── useClickOutside.ts   # Custom hook for click-outside detection
 │   ├── types.ts                 # Type definitions
 │   ├── geocoding.ts             # Nominatim API calls
 │   ├── storage.ts               # localStorage operations
