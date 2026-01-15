@@ -61,6 +61,11 @@ const MarkerInfo = ({
 						rows={1}
 						style={{
 							border: "1px solid #ddd",
+							overflowWrap: "break-word",
+							fieldSizing: "content",
+							minHeight: "1.5rem",
+							maxHeight: "3rem",
+							overflow: "hidden",
 						}}
 					/>
 				</div>

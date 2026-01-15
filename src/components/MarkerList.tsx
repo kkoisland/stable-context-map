@@ -38,7 +38,7 @@ const MarkerList = ({
 			{isOpen && (
 				<div
 					ref={panelRef}
-					className="absolute top-12 right-0 w-64 max-h-96 overflow-y-auto bg-white/70 dark:bg-gray-800/70 dark:text-white p-3 rounded border border-gray-300 dark:border-gray-600"
+					className="absolute top-12 right-0 w-64 max-h-[calc(100vh-8rem)] overflow-y-auto bg-white/70 dark:bg-gray-800/70 dark:text-white p-3 rounded border border-gray-300 dark:border-gray-600"
 				>
 					<div className="mb-2 font-bold">Markers</div>
 					{markers.length === 0 ? (
@@ -48,7 +48,7 @@ const MarkerList = ({
 							{markers.map((marker, index) => (
 								<div
 									key={marker.id}
-									className="group p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-sm flex items-center justify-between"
+									className="group p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-sm flex justify-between gap-2"
 								>
 									<button
 										type="button"
@@ -56,7 +56,8 @@ const MarkerList = ({
 											onMarkerClick(marker.id);
 											onOpenChange(false);
 										}}
-										className="cursor-pointer"
+										className="cursor-pointer text-left flex-1 min-w-0 line-clamp-2"
+										style={{ wordBreak: "break-all" }}
 									>
 										<span className="font-bold">{index + 1}.</span>{" "}
 										{marker.label}
