@@ -171,10 +171,13 @@ function App() {
 		const bounds = markers.map((m) => [m.lat, m.lng] as [number, number]);
 		mapRef.current?.fitBounds(bounds);
 
-		const newCenter = mapRef.current?.getCenter();
-		const newZoom = mapRef.current?.getZoom();
-		if (newCenter) setCenter(newCenter);
-		if (newZoom !== undefined) setZoom(newZoom);
+		// Wait for fitBounds animation to complete before getting new position
+		setTimeout(() => {
+			const newCenter = mapRef.current?.getCenter();
+			const newZoom = mapRef.current?.getZoom();
+			if (newCenter) setCenter(newCenter);
+			if (newZoom !== undefined) setZoom(newZoom);
+		}, 100);
 	};
 
 	const handleExportJSON = () => {
