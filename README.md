@@ -5,6 +5,12 @@ A React map application that preserves the user's viewing context. When searchin
 ## Purpose
 Searches do not change zoom or center - the displayed context is preserved. The user's viewpoint belongs to them, and search is information addition, not viewport manipulation.
 
+## Resources
+
+🚀 **Live Demo**: https://www.kkoisland.com/stable-context-map/
+
+📊 **Presentation**: [Google Slides (Preview)](https://docs.google.com/presentation/d/1MoYldpw8Tli5Bh_0_DOKAi_oIHQ25wk4KlN6TwuClU4/preview)
+
 ## Features
 
 ### Map Interaction
@@ -38,7 +44,8 @@ Searches do not change zoom or center - the displayed context is preserved. The 
 - pnpm (Package manager)
 - Biome (Formatter + Linter)
 - Tailwind CSS (Styling with dark mode support)
-- react-leaflet (Map display)
+- react-leaflet (Map display library)
+- OpenStreetMap (Map tiles & data provider)
 - Nominatim (OpenStreetMap geocoding API)
 - jsPDF (PDF generation)
 - html2canvas (Map screenshot capture)
