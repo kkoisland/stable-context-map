@@ -82,22 +82,79 @@ const exportToPDF = async ({
 		}
 	}
 
-	// Add marker information list to PDF as image
+	// Add marker information list to PDF as image (with pagination)
 	if (includeMarkerList && markers.length > 0) {
 		const element = createMarkerListElement(markers);
 		document.body.appendChild(element);
 
 		try {
 			const canvas = await html2canvas(element, { backgroundColor: "#fff" });
-			const imgHeight = (canvas.height * contentWidth) / canvas.width;
-			pdf.addImage(
-				canvas.toDataURL("image/png"),
-				"PNG",
-				10,
-				yPosition,
-				contentWidth,
-				imgHeight,
-			);
+			const pageHeightMm = 269.4; // Letter height (279.4) - 10mm margins
+			const pxPerMm = canvas.width / contentWidth;
+			const canvasScale = canvas.width / element.offsetWidth;
+
+			// Get marker boundaries: contentBottom for fitting check, sliceAt for cut position
+			const children = Array.from(element.children);
+			const markers = children.map((child, i) => {
+				const el = child as HTMLElement;
+				const contentBottom = (el.offsetTop + el.offsetHeight) * canvasScale;
+				const sliceAt =
+					i < children.length - 1
+						? (children[i + 1] as HTMLElement).offsetTop * canvasScale
+						: canvas.height;
+				return { contentBottom, sliceAt };
+			});
+
+			let srcY = 0;
+
+			while (srcY < canvas.height) {
+				if (srcY > 0) {
+					pdf.addPage();
+					yPosition = 10;
+				}
+
+				const availablePx = (pageHeightMm - yPosition) * pxPerMm;
+
+				// Check fitting by content bottom, slice at margin boundary
+				const fitting = markers.filter(
+					({ contentBottom }) =>
+						contentBottom > srcY && contentBottom - srcY <= availablePx,
+				);
+				const slicePx =
+					fitting.length > 0
+						? fitting[fitting.length - 1].sliceAt - srcY
+						: Math.min(availablePx, canvas.height - srcY);
+				const sliceMm = slicePx / pxPerMm;
+
+				const sliceCanvas = document.createElement("canvas");
+				sliceCanvas.width = canvas.width;
+				sliceCanvas.height = slicePx;
+				const ctx = sliceCanvas.getContext("2d");
+				if (ctx) {
+					ctx.drawImage(
+						canvas,
+						0,
+						srcY,
+						canvas.width,
+						slicePx,
+						0,
+						0,
+						canvas.width,
+						slicePx,
+					);
+				}
+
+				pdf.addImage(
+					sliceCanvas.toDataURL("image/png"),
+					"PNG",
+					10,
+					yPosition,
+					contentWidth,
+					sliceMm,
+				);
+
+				srcY += slicePx;
+			}
 		} catch (error) {
 			console.error("Failed to capture marker list:", error);
 		} finally {
