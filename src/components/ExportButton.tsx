@@ -18,6 +18,10 @@ const ExportButton = ({ markers, isOpen, onOpenChange }: ExportButtonProps) => {
 	useClickOutside(panelRef, () => onOpenChange(false), isOpen);
 
 	const handleExport = async () => {
+		if (!includeMap && !includeMarkerList) {
+			alert("Please select at least one option to export.");
+			return;
+		}
 		await exportToPDF({ filename, includeMap, includeMarkerList, markers });
 		onOpenChange(false);
 	};
