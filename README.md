@@ -1,5 +1,7 @@
 # stable-context-map
 
+📊 For a visual overview of this project, see the [Speaker Deck presentation](https://speakerdeck.com/kkoisland/stable-context-map).
+
 A React map application that preserves the user's viewing context. When searching for locations, the map maintains its current zoom level and center position, adding search results as markers without disrupting the user's viewport.
 
 ## Purpose
@@ -9,7 +11,7 @@ Searches do not change zoom or center - the displayed context is preserved. The 
 
 🚀 **Live Demo**: https://www.kkoisland.com/stable-context-map/
 
-📊 **Presentation**: [Google Slides (Preview)](https://docs.google.com/presentation/d/1MoYldpw8Tli5Bh_0_DOKAi_oIHQ25wk4KlN6TwuClU4/preview)
+📝 **Slides**: [Google Slides](https://docs.google.com/presentation/d/1MoYldpw8Tli5Bh_0_DOKAi_oIHQ25wk4KlN6TwuClU4/preview) — Same content as the Speaker Deck presentation, for those who cannot access Speaker Deck.
 
 ## Features
 
